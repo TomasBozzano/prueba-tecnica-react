@@ -23,28 +23,34 @@ export const getJobs = async () => {
 }
 
 export const applyForJob = async (PersonJobApply) => {
-    const {uuid, jobId, candidateId, repoUrl} = PersonJobApply
+    const {uuid, jobId, candidateId, repoUrl, applicationId} = PersonJobApply
+
+    const payload = {
+        uuid: String(uuid),
+        jobId: String(jobId),
+        candidateId: String(candidateId),
+        applicationId: String(applicationId),
+        repoUrl: String(repoUrl)
+        
+    }
 
     try {
-        const response = await fetch(`${API_URL}/api/jobs/apply`, {
+        const response = await fetch(`${API_URL}/api/candidate/apply-to-job`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                uuid,
-                jobId,
-                candidateId,
-                repoUrl
-            })
+            body: JSON.stringify(payload)
         });
         const data = await response.json();
-        
-        if (response.status !== 200) {
-            toast.error(data.message)
+
+        if (response.status !== 200 && response.status !== 201) {
+            return { ok: false, message: data.message || 'Error applying to job' }
         }
-        return data;
+        
+        return { ok: true, data };
     } catch (error) {
-        toast.error(error.message)
+        console.error('Error en applyForJob:', error);
+        return { ok: false, message: error.message }
     }
 }

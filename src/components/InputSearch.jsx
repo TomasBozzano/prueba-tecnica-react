@@ -8,7 +8,7 @@ export const InputSearch = ({ OnValue, OnChange, OnClick }) => {
 
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState(null)
-    const {setUuid, setCandidateId } = usePersonStore()
+    const {setUuid, setCandidateId, setApplicationId } = usePersonStore()
     const [error, setError] = useState(false)
 
     const handleClick = async (e) => {
@@ -35,6 +35,7 @@ export const InputSearch = ({ OnValue, OnChange, OnClick }) => {
         setResult(dataResult)
         setUuid(dataResult.uuid)
         setCandidateId(dataResult.candidateId)
+        setApplicationId(dataResult.applicationId)
 
         setTimeout(() => {
             setLoading(false)

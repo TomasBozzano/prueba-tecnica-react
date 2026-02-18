@@ -1,4 +1,4 @@
-export const Card = ({id, title, OnValue, OnClick, OnChange, error}) => {
+export const Card = ({id, title, OnValue, OnClick, OnChange, error, isApplying}) => {
 
     return (
         <>
@@ -9,12 +9,16 @@ export const Card = ({id, title, OnValue, OnClick, OnChange, error}) => {
                     <input type="text" className={`w-full p-2 border rounded shadow-lg ${error ? 'border-red-500' : ''}`}
                         value={OnValue}
                         onChange={OnChange}
-                        placeholder="Enter your project Github" />
+                        placeholder="Enter your project Github" 
+                        disabled={isApplying} />
                     {error && <p className="text-red-500 text-sm mt-1">Please enter your project GitHub URL.</p>}
                 </div>
                 <div className="flex justify-end px-6 py-4">
-                    <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" onClick={OnClick}
-                    >Apply</button>
+                    <button 
+                        className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                        onClick={OnClick}
+                        disabled={isApplying}
+                    >{isApplying ? 'Applying...' : 'Apply'}</button>
                 </div>
             </div>
         </>

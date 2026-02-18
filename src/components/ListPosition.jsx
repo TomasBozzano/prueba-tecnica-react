@@ -3,7 +3,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { toast } from "react-toastify";
 import { UsePagination } from "../hooks/UsePagination";
-import { getJobs } from "../service/jobs.service";
+import { applyForJob, getJobs } from "../service/jobs.service";
 import { usePersonStore } from "../store/storedPerson";
 import { urlGitHubValidate } from "../utils/utils";
 import { Button } from "./Button";
@@ -13,9 +13,10 @@ export const ListPosition = () => {
 
     const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true)
+    const [applyingJobId, setApplyingJobId] = useState(null)
     const [formState, setFormState] = useState({})
     const [github, setGithub] = useState('')
-    const { uuid, candidateId } = usePersonStore();
+    const { uuid, candidateId, applicationId } = usePersonStore();
     const { currentPage, totalPages, itemCurrent, backToPage, nextToPage, handleindexPage, handleLastPage } = UsePagination(jobs)
 
     useEffect(() => {
@@ -27,8 +28,8 @@ export const ListPosition = () => {
         fetchData();
     }, [])
 
-    const handleApply = async (jobId) => {
-        if(!uuid || !candidateId) {
+    const handleApply = async (jobId) => {        
+        if(!uuid || !candidateId || !applicationId) {
             toast.error('Please search your data first.');
             return;
         }
@@ -47,18 +48,30 @@ export const ListPosition = () => {
             [jobId]: { ...prev[jobId], error: false }
         }))
 
+        setApplyingJobId(jobId);
+
         const dataPostApply ={
             uuid,
             jobId,
             candidateId,
+            applicationId,
             repoUrl: github,
-
         }
 
-        console.log(dataPost)
+        try {
+            const response = await applyForJob(dataPostApply)
 
-        const response = await 
-        toast.success('Application submitted successfully!');
+            if(!response.ok){
+                toast.error(response.message);
+            }else{
+                toast.success('Application submitted successfully!');
+            }
+
+        } catch (error) {
+            toast.error(error.message);
+        }finally{
+            setApplyingJobId(null);
+        }
     }
 
     const handleChange = (e, jobId) => {
@@ -87,6 +100,7 @@ export const ListPosition = () => {
                             OnClick={() => handleApply(job.id)} 
                             OnChange={e => handleChange(e, job.id)} 
                             error={formState[job.id]?.error || false}
+                            isApplying={applyingJobId === job.id}
                         />
                     ))}
             </ul>
