@@ -1,7 +1,7 @@
 //Verificar si la url es valida y es de github
-export const urlGitHubValidate = (url) => {
+export const urlGithubValidateWithUsername = (url) => {
     if (!url) return false;
-    const urlPattern = /^(https?:\/\/)?(www\.)?github\.com\/[A-Za-z0-9_-]+\/?[A-Za-z0-9_-]*$/;
+    const urlPattern = /^https:\/\/github\.com\/(?!-)[A-Za-z0-9-]{1,39}(?<!-)\/[A-Za-z0-9._-]+\/?$/;
     return urlPattern.test(url);
 }
 

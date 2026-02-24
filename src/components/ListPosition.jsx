@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { UsePagination } from "../hooks/UsePagination";
 import { applyForJob, getJobs } from "../service/jobs.service";
 import { usePersonStore } from "../store/storedPerson";
-import { urlGitHubValidate } from "../utils/utils";
+import { urlGithubValidateWithUsername } from "../utils/utils";
 import { Button } from "./Button";
 import { Card } from "./Card";
 
@@ -34,7 +34,7 @@ export const ListPosition = () => {
             return;
         }
 
-        if(!github || !urlGitHubValidate(github)) {
+        if(!github || !urlGithubValidateWithUsername(github)) {
             setFormState(prev => ({
                 ...prev,
                 [jobId]: { ...prev[jobId], error: true }
